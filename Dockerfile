@@ -17,8 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     default-jre-headless \
     && add-apt-repository -y ppa:bkryza/clang-uml \
     && apt-get update \
-    # renovate: datasource=deb depName=clang-uml
-    && apt-get install -y --no-install-recommends clang-uml=0.6.3-0ubuntu1ppa1~noble \
+    # clang-uml has no reliable Renovate datasource against its Launchpad
+    # PPA (undocumented/unconfirmed support) -- left unpinned and picked
+    # up via the scheduled monthly rebuild instead (see
+    # .github/workflows/scheduled-rebuild.yml).
+    && apt-get install -y --no-install-recommends clang-uml \
     && apt-get purge -y software-properties-common gnupg \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*

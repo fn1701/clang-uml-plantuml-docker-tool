@@ -8,6 +8,7 @@ on:
       - "entrypoint.sh"
       - ".github/workflows/build-and-push.yml"
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build-and-push:

@@ -1,0 +1,16 @@
+name: Scheduled rebuild
+
+# clang-uml is installed unpinned from its Launchpad PPA (see Dockerfile) --
+# Renovate has no confirmed, reliable way to track versions published to a
+# third-party PPA, so instead this rebuilds monthly to pick up whatever
+# clang-uml release the PPA has at that point. Base image and PlantUML
+# stay Renovate-tracked (build-and-push.yml handles those bumps).
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    uses: ./.github/workflows/build-and-push.yml

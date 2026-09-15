@@ -55,6 +55,10 @@ container to reach the network at run time.
 
 ## Versioning
 
-Image tags follow the bundled clang-uml version. Base image, clang-uml, and
-PlantUML versions are tracked by Renovate (see `renovate.json`) and bumped
-automatically via PR.
+The base image and PlantUML version are pinned and tracked by Renovate (see
+`renovate.json`), bumped automatically via PR. clang-uml is installed
+unpinned from its [Launchpad PPA](https://launchpad.net/~bkryza/+archive/ubuntu/clang-uml) —
+Renovate has no confirmed, reliable way to track versions from a
+third-party PPA, so the image instead rebuilds automatically on the 1st of
+each month to pick up whatever clang-uml release is current at that point
+(see `.github/workflows/scheduled-rebuild.yml`).

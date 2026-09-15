@@ -3,8 +3,12 @@
 # a compile_commands.json under the mounted working directory), then
 # renders every generated .puml file to the requested image format(s).
 #
-# Usage: docker run --rm --network=none -v "$PWD:/workspace" \
+# Usage: docker run --rm --network=none -v "$PWD:$PWD" -w "$PWD" \
 #          <image> [--format svg,png,jpg] [clang-uml args...]
+#
+# Mount at the same absolute path as the host: compile_commands.json bakes
+# in absolute paths at configure time, so remapping the mount (e.g. to
+# /workspace) breaks clang-uml's glob matching against translation units.
 set -eu
 
 FORMATS="svg"

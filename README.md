@@ -25,7 +25,7 @@ From a C++ project with a CMake-generated `compile_commands.json` and a
 
 ```sh
 docker run --rm --network=none \
-  -v "$PWD:/workspace" \
+  -v "$PWD:$PWD" -w "$PWD" \
   ghcr.io/fn1701/clang-uml-plantuml-docker-tool:latest \
   --format svg,png
 ```
@@ -34,6 +34,31 @@ docker run --rm --network=none \
 - Any other arguments are passed through to `clang-uml` itself (e.g. `-c path/to/config.yml`).
 - Output lands wherever `.clang-uml`'s `output_directory` points, as `.puml`
   sources plus one rendered image per format per diagram.
+
+Mount the project at the **same absolute path** inside the container as on
+the host (`-v "$PWD:$PWD" -w "$PWD"`), not at an arbitrary path like
+`/workspace`. `compile_commands.json` bakes in absolute host paths at
+`cmake configure` time; if the container mounts the project elsewhere,
+clang-uml's glob patterns won't match any translation unit and every
+diagram fails with `no translation units found`.
+
+If your project's headers pull in system libraries not present in the
+image (e.g. Qt, yaml-cpp), bind-mount those include directories at their
+original host paths too, so clang can resolve them without extra `-I`
+flags:
+
+```sh
+docker run --rm --network=none \
+  -v "$PWD:$PWD" -w "$PWD" \
+  -v /usr/include/qt6:/usr/include/qt6:ro \
+  -v /usr/include/yaml-cpp:/usr/include/yaml-cpp:ro \
+  ghcr.io/fn1701/clang-uml-plantuml-docker-tool:latest \
+  --format svg,png
+```
+
+Compiler-specific flags in `compile_commands.json` that Clang doesn't
+recognize (e.g. GCC's `-mno-direct-extern-access`) can be stripped with
+`clang-uml`'s own `--remove-compile-flag`, passed through after `--format`.
 
 `--network=none` is recommended: diagram generation only needs to read your
 source tree and write output, so there's no legitimate reason for the
@@ -48,7 +73,7 @@ container to reach the network at run time.
 - name: Generate diagrams
   run: |
     docker run --rm --network=none \
-      -v "$PWD:/workspace" \
+      -v "$PWD:$PWD" -w "$PWD" \
       ghcr.io/fn1701/clang-uml-plantuml-docker-tool:latest \
       --format svg
 ```

@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && add-apt-repository -y ppa:bkryza/clang-uml \
     && apt-get update \
     # renovate: datasource=deb depName=clang-uml
-    && apt-get install -y --no-install-recommends clang-uml=0.6.2-0ubuntu1ppa1 \
+    && apt-get install -y --no-install-recommends clang-uml=0.6.3-0ubuntu1ppa1~noble \
     && apt-get purge -y software-properties-common gnupg \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
